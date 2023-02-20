@@ -1,21 +1,24 @@
 import get_interpretation from "./script/get_interpretation.js"
-import interpret from "./script/interpret.js"
-import generate from "./script/generate.js"
+import get_generation from "./script/get_generation.js"
+import interpret from "./script/interpret_clip.js"
+import generate from "./script/generate_img2img.js"
 
 let path = './img/output/'
 
 async function step(sequence:number) {
     console.log("path " + path, "sequence " + sequence)
-    let interpretation = interpret(path, sequence)
-    console.log(interpretation)
+    let interpretation = await interpret(path, sequence)
+    //console.log(interpretation)
     console.log("sleep some")
-    await Bun.sleep(30000)
-    let prompt = get_interpretation(path, sequence)
+    await Bun.sleep(5000)
+    let prompt = await get_interpretation(path, sequence)
     await prompt
-    generate(await prompt, path, sequence)
-    await Bun.sleep(10000)
+    await generate(await prompt, path, sequence)
+    await Bun.sleep(5000)
+    await get_generation(path, sequence) /* This one is here for the replicate.com path */
 }
 
-for(let sequence = 0; sequence < 5; sequence++) {
+for(let sequence = 0; sequence < 10; sequence++) {
     await step(sequence)
+    await Bun.sleep(5000)
 }
