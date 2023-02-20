@@ -1,6 +1,6 @@
 import get_interpretation from "./script/get_interpretation.js"
 import get_generation from "./script/get_generation.js"
-import interpret from "./script/interpret_clip.js"
+import interpret from "./script/interpret.js"
 import generate from "./script/generate_img2img.js"
 
 let path = './img/output/'
@@ -10,7 +10,7 @@ async function step(sequence:number) {
     let interpretation = await interpret(path, sequence)
     //console.log(interpretation)
     console.log("sleep some")
-    await Bun.sleep(5000)
+    await Bun.sleep(10000)
     let prompt = await get_interpretation(path, sequence)
     await prompt
     await generate(await prompt, path, sequence)

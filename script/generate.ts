@@ -1,3 +1,4 @@
+//Generate via openai dall-e
 
 const headers = new Headers({
     'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY,
