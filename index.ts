@@ -14,7 +14,7 @@ async function step(sequence:number) {
     let prompt = await get_interpretation(path, sequence)
     await prompt
     await generate(await prompt, path, sequence)
-    await Bun.sleep(5000)
+    await Bun.sleep(10000)
     await get_generation(path, sequence) /* This one is here for the replicate.com path */
 }
 

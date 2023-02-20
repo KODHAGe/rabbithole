@@ -26,7 +26,7 @@ export default (prompt:string, path:string, sequence:number) => {
 
     console.log('run stable diffusion')
     let body = {
-        "version": "c49a9422a0d4303e6b8a8d2cf35d4d1b1fd49d32b946f6d5c74b78886b7e5dc3",
+        "version": "650c347f19a96c8a0379db998c4cd092e0734534591b16a60df9942d11dec15b",
         "input": {
             "prompt": prompt,
             "negative_prompt":"",
