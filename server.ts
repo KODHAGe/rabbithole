@@ -1,46 +1,51 @@
 // POST endpoints for handling webhook input
 import generationHandler from './script/generationHandler.js'
 import interpretationHandler from './script/interpretationHandler.js'
-import webFront from './script/webFront.js'
 
 // GET endpoints for showing stuff on screen
 
 // Define routes
 const paths = {
     get: [
-        {path: 'generation', handler: generationHandler()},
-        {path: 'interpretation', handler: interpretationHandler()},
-        {path: '', handler: webFront()},
+        {path: '', handler: function() {
+            return '<3'
+        }}
     ],
     post: [
-        {path: 'generation', handler: generationHandler()},
-        {path: 'interpretation', handler: interpretationHandler()},
+        {path: 'generation', handler: (req:Request, path:string, sequence:number, iterations:number) => generationHandler(req, path, sequence, iterations)},
+        {path: 'interpretation', handler: (req:Request, path:string, sequence:number,  iterations:number) => interpretationHandler(req, path, sequence, iterations)}
     ]
 }
+
+const filepath = process.env.FILE_PATH as string
 
 export default {
     port: 3000,
     async fetch(req:any) {
-        let method = req.method
-        let path = new URL(req.url).pathname
-        let response:any;
+        let method = req.method,
+            url = new URL(req.url),
+            path = url.pathname, // for handling routing
+            dryrun = url.searchParams.get('dry'), // dry run = run without generation/interpretation
+            sequence = Number(url.searchParams.get('seq')), // current nr in sequence
+            iterations = Number(url.searchParams.get('n')),
+            response:any
         
-        if (method == "GET") {
-            for (const element of paths.get) {
-                if(path == ('/' + element.path)) {
-                    response = await element.handler
-                } else {
-                    response = "404 nuhh"
-                }
-            }
-        } else if (method == "POST") {
+        /* ~~~~handle post paths~~~~ */
+        if (method == "POST") {
             for (const element of paths.post) {
                 if(path == ('/' + element.path)) {
-                    response = await element.handler
+                    if(dryrun == 'true'){
+                        response = '<3 dry run <3'
+                    } else {
+                        response = await element.handler(req, filepath, sequence, iterations)
+                    }
+                    break;
                 } else {
                     response = "404 nuhh"
                 }
             }
+
+        /* ~~~~kill all else~~~~ */
         } else {
             response = "invalid nuhh"
         }
