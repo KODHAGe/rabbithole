@@ -21,7 +21,7 @@ const filepath = process.env.FILE_PATH as string
 
 export default {
     port: 3000,
-    async fetch(req:any) {
+    async fetch(req:Request) {
         let method = req.method,
             url = new URL(req.url),
             path = url.pathname, // for handling routing

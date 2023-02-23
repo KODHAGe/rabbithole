@@ -2,10 +2,16 @@ import interpret from './interpret.js'
 
 export default async function (request:Request, path:string, sequence:number, iterations:number) {
     const generation:any = await request.json()
-    Bun.write(path + sequence + '.png', await fetch(generation.output[0]))
-    return new Promise((resolve) => {
-        console.log(generation.id + " ~~ " + generation.status + " ~~ in " + generation.metrics.predict_time + "s")
-        interpret(path, (sequence + 1), iterations)
-        resolve(generation.id + " ~~ " + generation.status + " ~~ in " + generation.metrics.predict_time + "s")
-    });
+    sequence = sequence + 1
+    fetch(generation.output[0]).then((result) => {
+        Bun.write(path + sequence + '.jpeg', result).then(() => {
+            return new Promise((resolve) => {
+                console.log(generation.id + " ~~ " + generation.status + " ~~ in " + generation.metrics.predict_time + "s")
+                if(sequence <= iterations) {
+                    interpret(path, sequence, iterations)
+                }
+                resolve(generation.id + " ~~ " + generation.status + " ~~ in " + generation.metrics.predict_time + "s")
+            });
+        })
+    })
 }

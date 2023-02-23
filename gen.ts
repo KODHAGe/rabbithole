@@ -1,6 +1,6 @@
-import interpret from "./script/interpret.js"
+import generate from "./script/generate.js"
 
 const path = process.env.FILE_PATH as string
 
 // It starts with - file path, index and maximum iterations
-await interpret(path, 0, 5)
+await generate("cool icy nicey",path, 0, 1)

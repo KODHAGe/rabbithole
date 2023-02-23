@@ -8,8 +8,7 @@ const headers = new Headers({
 export default async function(path:string, sequence:number, iterations: number) {
     return new Promise((resolve) => {
         console.log("🌠 Interpret image") 
-
-        let filepath = path + sequence + ".png"
+        let filepath = path + sequence + ".jpeg"
         console.log("Processing file: " + filepath)
     
         /*
@@ -28,11 +27,11 @@ export default async function(path:string, sequence:number, iterations: number) 
         let body = {
             "version": "a4a8bafd6089e1716b06057c42b19378250d008b80fe87caa5cd36d40c1eda90",
             "input": {
-                "image": "data:image/png;base64," + Buffer.from(fs.readFileSync(filepath)).toString('base64'),
+                "image": "data:image/jpeg;base64," + Buffer.from(fs.readFileSync(filepath)).toString('base64'),
                 "mode": "fast", //for clip-interrogator, default "best"
                 "clip_model_name": "ViT-L-14/openai" //for clip-interrogator, stable diffusion 2 ViT-H-14/laion2b_s32b_b79k
             },
-            "webhook": process.env.SERVER_URL + "/interpret&seq=" + sequence,
+            "webhook": process.env.SERVER_URL + "interpretation?seq=" + sequence + "&n=" + iterations,
             "webhook_events_filter": ["completed"]
         }
     
@@ -44,6 +43,7 @@ export default async function(path:string, sequence:number, iterations: number) 
     
         fetch(request)
         .then((response) => {
+            console.log("~~~ set webhook for " + process.env.SERVER_URL + "interpretation?seq=" + sequence + "&n=" + iterations+ " ~~~")
             console.log("~~ "+response.statusText+" ~~")
             resolve(response.statusText)
         })

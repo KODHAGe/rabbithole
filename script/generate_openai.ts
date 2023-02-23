@@ -27,7 +27,7 @@ export default (prompt:string, path:string, sequence:number) => {
         let url = json.data[0].url
         fetch(url).then((res) => res.blob())
         .then((blob:Blob) => {
-            Bun.write(path + next + ".png", blob)
+            Bun.write(path + next + ".jpeg", blob)
             console.log("Write success!")
             return true
         })

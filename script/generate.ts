@@ -7,10 +7,8 @@ const headers = new Headers({
 
 export default async function(prompt:string, path:string, sequence:number, iterations:number) {
     return new Promise((resolve) => {
-        console.log("Generate image 📸")
-        let next = sequence + 1
-    
-        let filepath = path + sequence + ".png"
+        console.log("Generate image 📸")    
+        let filepath = path + sequence + ".jpeg"
         console.log("Processing file: " + filepath)
     
         /*
@@ -24,19 +22,18 @@ export default async function(prompt:string, path:string, sequence:number, itera
         650c347f19a96c8a0379db998c4cd092e0734534591b16a60df9942d11dec15b
 
         jagilley/controlnet-hed
-        cde353130c86f37d0af4060cd757ab3009cac68eb58df216768f907f0d0a0653
+        cde353130c86f37d0af4060cd757ab3009cac68eb58df216768f907f0d0a0653    
     
         */
     
-        console.log('run stable diffusion')
         let body = {
-            "version": "650c347f19a96c8a0379db998c4cd092e0734534591b16a60df9942d11dec15b",
+            "version": "c49a9422a0d4303e6b8a8d2cf35d4d1b1fd49d32b946f6d5c74b78886b7e5dc3",
             "input": {
                 "prompt": prompt,
                 "negative_prompt":"",
-                "image": "data:image/png;base64," + Buffer.from(fs.readFileSync(filepath)).toString('base64')
+                "image": "data:image/jpeg;base64," + Buffer.from(fs.readFileSync(filepath)).toString('base64')
             },
-            "webhook": process.env.SERVER_URL + "/generate",
+            "webhook": process.env.SERVER_URL + "generation?seq=" + sequence + "&n=" + iterations,
             "webhook_events_filter": ["completed"]
         }
     
@@ -48,7 +45,8 @@ export default async function(prompt:string, path:string, sequence:number, itera
     
         fetch(request)
         .then((response) => {
-            console.log(response.statusText)
+            console.log("~~~ set webhook for " + process.env.SERVER_URL + "generation?seq=" + sequence + "&n=" + iterations+ " ~~~")
+            console.log("~~~ "+ response.statusText+" ~~~")
             resolve(response.statusText)
         })
     })
